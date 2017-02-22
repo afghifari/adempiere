@@ -92,6 +92,7 @@ public final class ALogin extends CDialog
 		m_WindowNo = Env.createWindowNo (null);
 		res = ResourceBundle.getBundle(RESOURCE);
 		//
+		System.out.println("BERHASILLLLLL");
 		try
 		{
 			jbInit();
@@ -465,6 +466,7 @@ public final class ALogin extends CDialog
 	 */
 	public boolean isOKpressed()
 	{
+		System.out.println("MANTAP KALI KAU");
 		return m_okPressed;
 	}	//	isOKpressed
 	

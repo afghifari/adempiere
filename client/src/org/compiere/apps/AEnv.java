@@ -18,6 +18,7 @@ package org.compiere.apps;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
@@ -26,6 +27,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -494,12 +497,59 @@ public final class AEnv
 		{
 			AEnv.showCenterScreen(new AboutBox(Env.getFrame(c)));
 		}
+		else if (actionCommand.equals("Documentation"))
+		{
+			//AEnv.showCenterScreen(new AboutBox(Env.getFrame(c)));
+			System.out.println("Calling quick guide from Help menu");
+			//callQuickGuide();
+			if (Desktop.isDesktopSupported()) {
+				try {
+			        File myFile = new File("tuning.pdf");
+			        Desktop.getDesktop().open(myFile);
+			    } catch (IOException  ex) {
+			        // no application registered for PDFs
+			    	System.out.println("Fail Open PDF : " + ex);
+			    }
+			}
+		}
 		else
 			return false;
 		//
 		return true;
 	}   //  actionPerformed
 
+	public static void callQuickGuide() {
+		/* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(QuickGuide.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(QuickGuide.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(QuickGuide.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(QuickGuide.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+           
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new QuickGuide().setVisible(true);
+            }
+        });
+	}
+	
 	/**
 	 *  Set Text and Mnemonic for Button.
 	 *  Create Mnemonics of text containing '&'.

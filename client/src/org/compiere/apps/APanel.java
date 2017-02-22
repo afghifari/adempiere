@@ -59,6 +59,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.JLabel;
 
 import org.adempiere.model.MBrowse;
 import org.compiere.apps.form.FormFrame;
@@ -317,8 +318,8 @@ public final class APanel extends CPanel
 	//	Local (added to toolbar)
 	private AppsAction	    aReport, aEnd, aHome, aHelp, aProduct, aLogout,
 							aAccount, aCalculator, aCalendar, aEditor, aPreference, aScript,
-							aOnline, aMailSupport, aAbout, aPrintScr, aScrShot, aExit, aBPartner,
-							aDeleteSelection, aShowAllWindow;
+							aOnline, aDocumentation, aMailSupport, aAbout, aPrintScr, aScrShot, aExit, aBPartner,
+							aDeleteSelection, aShowAllWindow, aFeature;
 
 	private SwitchAction aSwitchLinesDownAction, aSwitchLinesUpAction;
 
@@ -475,62 +476,163 @@ public final class APanel extends CPanel
 		menuBar.add(mHelp);
 		aHelp = 	addAction("Help",			mHelp, 	KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),	false);
 		aOnline =	addAction("Online",			mHelp, 	null,	false);
+		aDocumentation = addAction("Documentation",			mHelp, 	null,	false);
 		aMailSupport = addAction("EMailSupport",	mHelp,	null,	false);
 		aAbout = 	addAction("About",			mHelp, 	null,	false);
+		aFeature = addAction("Feature", mHelp, null, false);
 
 		/**
 		 *	ToolBar
 		 */
-		toolBar.add(aIgnore.getButton());		//	ESC
-		toolBar.addSeparator();
-		toolBar.add(aHelp.getButton());			//	F1
-		toolBar.add(aNew.getButton());
-		toolBar.add(aCopy.getButton());
-		toolBar.add(aDelete.getButton());
-		toolBar.add(aDeleteSelection.getButton());
-		toolBar.add(aSave.getButton());
-		toolBar.addSeparator();
-		toolBar.add(aRefresh.getButton());      //  F5
-		toolBar.add(aFind.getButton());
-		toolBar.add(aAttachment.getButton());
-		toolBar.add(aChat.getButton());
-		toolBar.add(aMulti.getButton());
-		toolBar.addSeparator();
+		int total_segment = 13;
+		JToolBar[] segments = new JToolBar[total_segment];
+		JToolBar[] tops = new JToolBar[total_segment];
+		JToolBar[] bottoms = new JToolBar[total_segment];
+		JLabel[] labels = new JLabel[total_segment];
+		
+		for (int i = 0; i < total_segment; ++i) {
+			labels[i] = new JLabel();
+			
+			tops[i] = new JToolBar();
+			tops[i].putClientProperty("JToolBar.isRollover", Boolean.TRUE);
+			tops[i].setBorderPainted(false);
+			tops[i].setFloatable(false);
+			
+			bottoms[i] = new JToolBar();
+			bottoms[i].putClientProperty("JToolBar.isRollover", Boolean.TRUE);
+			bottoms[i].setBorderPainted(false);
+			bottoms[i].setFloatable(false);
+			
+			segments[i] = new JToolBar();
+			segments[i].putClientProperty("JToolBar.isRollover", Boolean.TRUE);
+			segments[i].setBorderPainted(false);
+			segments[i].setFloatable(false);
+			segments[i].setOrientation(1);
+			
+			bottoms[i].add(labels[i]);
+			segments[i].add(tops[i]);
+			segments[i].add(bottoms[i]);
+			
+			if (i % 2 == 1) {
+				tops[i].addSeparator();
+			}
+			toolBar.add(segments[i]);
+		}
+		//File
+		tops[0].add(aNew.getButton());
+		tops[0].add(aDeleteSelection.getButton());
+		tops[0].add(aDelete.getButton());
+		tops[0].add(aSave.getButton());
+		labels[0].setText("File");
+		
+		//Editing
+		tops[2].add(aIgnore.getButton());
+		tops[2].add(aRefresh.getButton());
+		tops[2].add(aFind.getButton());
+		labels[2].setText("Editing");
+		
+		//View
+		tops[4].add(aAttachment.getButton());
+		tops[4].add(aChat.getButton());
+		tops[4].add(aMulti.getButton());
+		labels[4].setText("View");
+		
+		//Record
 		//FR [ 1757088 ]
 		if((m_curGC == null) || (m_curGC != null && !m_curGC.isDetailGrid())){
-			toolBar.add(aHistory.getButton());		//	F9
-			toolBar.add(aHome.getButton()); //	F10 is Windows Menu Key
-			toolBar.add(aParent.getButton());
-			toolBar.add(aDetail.getButton());
-			toolBar.addSeparator();
+			tops[6].add(aHistory.getButton());		//	F9
+			tops[6].add(aHome.getButton()); //	F10 is Windows Menu Key
+			tops[6].add(aParent.getButton());
+			tops[6].add(aDetail.getButton());
 		}
-
-		toolBar.add(aFirst.getButton());
-		toolBar.add(aPrevious.getButton());
-		toolBar.add(aNext.getButton());
-		toolBar.add(aLast.getButton());
-		toolBar.addSeparator();
-		toolBar.add(aReport.getButton());
-		toolBar.add(aArchive.getButton());
-		toolBar.add(aPrintPreview.getButton());
-		toolBar.add(aPrint.getButton());
-		// FR [ 1757088 ]
+		tops[6].add(aFirst.getButton());
+		tops[6].add(aPrevious.getButton());
+		tops[6].add(aNext.getButton());
+		tops[6].add(aLast.getButton());
+		labels[6].setText("Record");
+		
+		//Publish
+		tops[8].add(aReport.getButton());
+		tops[8].add(aArchive.getButton());
+		tops[8].add(aPrintPreview.getButton());
+		tops[8].add(aPrint.getButton());
+		labels[8].setText("Publish");
+		
+		//Tools
+		tops[10].add(aCopy.getButton());
 		if((m_curGC == null) || (m_curGC != null && !m_curGC.isDetailGrid())){
-			toolBar.addSeparator();
 			if (m_isPersonalLock)
-				toolBar.add(aLock.getButton());
-			toolBar.add(aZoomAcross.getButton());
+				tops[10].add(aLock.getButton());
+			tops[6].add(aZoomAcross.getButton());
 			if (aWorkflow != null)
-				toolBar.add(aWorkflow.getButton());
-			toolBar.add(aRequest.getButton());
-			toolBar.add(AProcess.createAppsAction(this).getButton());
+				tops[10].add(aWorkflow.getButton());
+			tops[10].add(aRequest.getButton());
+			tops[10].add(AProcess.createAppsAction(this).getButton());
 			if (MRole.getDefault().isAllow_Info_Product())
 			{
-				toolBar.add(aProduct.getButton());
+				tops[10].add(aProduct.getButton());
 			}
-			toolBar.addSeparator();
-			toolBar.add(aEnd.getButton());
 		}
+		labels[10].setText("Tools");
+		
+		//No Label
+		tops[12].add(aHelp.getButton());
+		if((m_curGC == null) || (m_curGC != null && !m_curGC.isDetailGrid())) {
+			tops[12].add(aEnd.getButton());
+		}
+		
+		
+//		//tops[0].add(aIgnore.getButton());		//	ESC
+//		toolBar.addSeparator();
+//		//tops[1].add(aHelp.getButton());			//	F1
+//		//tops[1].add(aNew.getButton());
+//		//tops[1].add(aCopy.getButton());
+//		//tops[1].add(aDelete.getButton());
+//		//tops[1].add(aDeleteSelection.getButton());
+//		//tops[1].add(aSave.getButton());
+//		toolBar.addSeparator();
+//		//tops[2].add(aRefresh.getButton());      //  F5
+//		//tops[2].add(aFind.getButton());
+//		//tops[2].add(aAttachment.getButton());
+//		//tops[2].add(aChat.getButton());
+//		//tops[2].add(aMulti.getButton());
+//		toolBar.addSeparator();
+//		//FR [ 1757088 ]
+////		if((m_curGC == null) || (m_curGC != null && !m_curGC.isDetailGrid())){
+////			tops[3].add(aHistory.getButton());		//	F9
+////			tops[3].add(aHome.getButton()); //	F10 is Windows Menu Key
+////			tops[3].add(aParent.getButton());
+////			tops[3].add(aDetail.getButton());
+////			toolBar.addSeparator();
+////		}
+////
+////		tops[4].add(aFirst.getButton());
+////		tops[4].add(aPrevious.getButton());
+////		tops[4].add(aNext.getButton());
+////		tops[4].add(aLast.getButton());
+////		toolBar.add(segments[4]);
+//		toolBar.addSeparator();
+//		//tops[5].add(aReport.getButton());
+//		//tops[5].add(aArchive.getButton());
+//		//tops[5].add(aPrintPreview.getButton());
+//		//tops[5].add(aPrint.getButton());
+//		// FR [ 1757088 ]
+////		if((m_curGC == null) || (m_curGC != null && !m_curGC.isDetailGrid())){
+////			toolBar.addSeparator();
+////			if (m_isPersonalLock)
+////				tops[6].add(aLock.getButton());
+////			tops[6].add(aZoomAcross.getButton());
+////			if (aWorkflow != null)
+////				tops[6].add(aWorkflow.getButton());
+////			tops[6].add(aRequest.getButton());
+////			tops[6].add(AProcess.createAppsAction(this).getButton());
+////			if (MRole.getDefault().isAllow_Info_Product())
+////			{
+////				tops[6].add(aProduct.getButton());
+////			}
+////			toolBar.addSeparator();
+////			//tops[7].add(aEnd.getButton());
+////		}
 
 		//
 		if (CLogMgt.isLevelAll())

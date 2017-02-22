@@ -501,16 +501,16 @@ public final class AEnv
 		{
 			//AEnv.showCenterScreen(new AboutBox(Env.getFrame(c)));
 			System.out.println("Calling quick guide from Help menu");
-			//callQuickGuide();
-			if (Desktop.isDesktopSupported()) {
-				try {
-			        File myFile = new File("tuning.pdf");
-			        Desktop.getDesktop().open(myFile);
-			    } catch (IOException  ex) {
-			        // no application registered for PDFs
-			    	System.out.println("Fail Open PDF : " + ex);
-			    }
-			}
+			callQuickGuide();
+//			if (Desktop.isDesktopSupported()) {
+//				try {
+//			        File myFile = new File("tuning.pdf");
+//			        Desktop.getDesktop().open(myFile);
+//			    } catch (IOException  ex) {
+//			        // no application registered for PDFs
+//			    	System.out.println("Fail Open PDF : " + ex);
+//			    }
+//			}
 		}
 		else
 			return false;
